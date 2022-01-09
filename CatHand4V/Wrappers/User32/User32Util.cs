@@ -23,8 +23,6 @@ namespace CatHand4V.Wrappers.User32
                         wVk = (short)virtualKeyCode,
                         wScan = (short)User32Wrapper.MapVirtualKey((int)virtualKeyCode, 0),
                         dwFlags = (int)dwFlags
-                        // time = 0,
-                        // dwExtraInfo = IntPtr.Zero
                     }
                 }
             };

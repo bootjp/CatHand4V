@@ -4,6 +4,7 @@
     public enum VirtualKeyCode
     {
         VK_LCONTROL = 0xA2,
-        VK_OEM_5 = 0xDC
+        VK_ENTER = 0x0D,
+        VK_V = 0x56
     }
 }

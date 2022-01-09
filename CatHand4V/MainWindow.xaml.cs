@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Diagnostics;
@@ -34,10 +33,15 @@ namespace CatHand4V
             var inputs = User32Util.CreateKeyboardInputs(
                 new (DwFlags dwFlags, VirtualKeyCode virtualKeyCode)[]
                 {
+                    // paste
                     (DwFlags.NONE, VirtualKeyCode.VK_LCONTROL),
-                    (DwFlags.NONE, VirtualKeyCode.VK_OEM_5),
+                    (DwFlags.NONE, VirtualKeyCode.VK_V),
                     (DwFlags.KEYEVENTF_KEYUP, VirtualKeyCode.VK_LCONTROL),
-                    (DwFlags.KEYEVENTF_KEYUP, VirtualKeyCode.VK_OEM_5)
+                    (DwFlags.KEYEVENTF_KEYUP, VirtualKeyCode.VK_V),
+                    
+                    // enter
+                    (DwFlags.NONE, VirtualKeyCode.VK_ENTER),
+                    (DwFlags.KEYEVENTF_KEYUP, VirtualKeyCode.VK_ENTER)
                 }).ToArray();
 
             User32Wrapper.SendInput(inputs.Length, inputs, Marshal.SizeOf(inputs[0]));
