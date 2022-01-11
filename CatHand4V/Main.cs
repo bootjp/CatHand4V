@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
+using System.Web.Helpers;
 using System.Windows;
 using CatHand4V.Wrappers.User32;
 
@@ -10,6 +11,7 @@ namespace CatHand4V
 {
     public static class Mains
     {
+        [STAThread]
         private static void Main(string[] args)
         {
             
@@ -26,6 +28,15 @@ namespace CatHand4V
                 var response = context.Response;
             
                 Debug.WriteLine(request.Url.AbsolutePath);
+                Debug.WriteLine(request.HttpMethod);
+
+                if (request.HttpMethod != "PUT")
+                {
+                    response.StatusCode = 400;
+                    response.Close();
+                    continue;
+                }
+
                 switch (request.Url.AbsolutePath)
                 {
                     default:
@@ -35,7 +46,33 @@ namespace CatHand4V
                         running = false;
                         response.StatusCode = 204;
                         break;
-                    case "/paste":
+                    case "/url":
+                        var url = request.QueryString.Get("url");
+                        if (!request.HasEntityBody)
+                        {
+                            response.StatusCode = 400;
+                            response.Close();
+                            continue;
+                        }
+
+                        System.IO.Stream body = request.InputStream;
+                        System.Text.Encoding encoding = request.ContentEncoding;
+                        System.IO.StreamReader reader = new System.IO.StreamReader(body, encoding);
+                        string s = reader.ReadToEnd();
+                        Console.WriteLine(s);
+                        Query q;
+                        try
+                        {
+                            q = Json.Decode<Query>(s);
+                        } catch (Exception e)
+                        {
+                            response.StatusCode = 400;
+                            response.Close();
+                            continue;
+                        }
+
+                        Debug.WriteLine(q.Url);
+                        Copy(q.Url);
                         Paste();
                         response.StatusCode = 202;
                         break;
@@ -43,6 +80,18 @@ namespace CatHand4V
                 response.Close();
             }
             listener.Stop();
+        }
+
+        private static void Copy(string url)
+        {
+            try
+            {
+                Clipboard.SetText(url);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
         }
 
         private static void Paste()
