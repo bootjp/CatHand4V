@@ -1,3 +1,5 @@
+migrated new project  https://github.com/bootjp/send-vrc-desktop-rs
+
 # send_vrc_desktop
 
 
